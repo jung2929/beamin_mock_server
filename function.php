@@ -11,7 +11,6 @@
     use GuzzleHttp\HandlerStack;
 
 
-
     function getSQLErrorException($errorLogs, $e, $req){
         $res = (Object) Array();
         http_response_code(500);
@@ -86,6 +85,11 @@
 //        sendDebugEmail("Error : " . $req["REQUEST_METHOD"] . " " . $req["REQUEST_URI"] , "<pre>" . json_encode($logData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . "</pre>");
     }
 
+    function getAuth(){
+        $num=mt_rand(0,9999);
+        $authNum=str_pad($num,4,'0',STR_PAD_LEFT);
+        return $authNum;
+    }
 
     function getLogs($path){
         $fp = fopen($path, "r" , FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);

@@ -16,6 +16,8 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
     $r->addRoute('GET', '/', 'index');
     $r->addRoute('POST', '/login', 'login');
     $r->addRoute('POST', '/users', 'signUp');
+    $r->addRoute('POST', '/users/auth','sendSms');
+    $r->addRoute('GET', '/users/auth','smsAuth');
     $r->addRoute('GET', '/test', 'test');
 
 });
