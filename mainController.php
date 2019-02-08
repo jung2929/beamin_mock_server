@@ -207,6 +207,108 @@
             * 마지막 수정 날짜 : 19.02.03
             */
 
+            case "restaurantList":
+                $category=$_GET['category'];
+                $latitude=$req->latitude;
+                $longitude=$req->longitude;
+
+                if($latitude<-90 || $latitude > 90 || $longitude < -180 || $longitude > 180){
+                    http_response_code(400);
+                    $res->code = 400;
+                    $res->isSuccess=false;
+                    $res->message = "올바르지 않은 좌표";
+                    addErrorLogs($errorLogs, $res, $req);
+                    echo json_encode($res, JSON_NUMERIC_CHECK);
+                    return;
+                }
+                $restaurantList=getRestrauntList($latitude,$longitude, $category);
+                switch($category){
+                    case 'korean':
+                    case 'snack':
+                    case 'chinese':
+                    case 'japanese':
+                    case 'chicken':
+                    case 'pizza':
+                    case 'fastfood':
+                    case 'jokbo':
+                    case 'soup':
+                        break;
+                    default:
+                        http_response_code(404);
+                        $res->code = 404;
+                        $res->isSuccess=false;
+                        $res->message = "존재하지 않는 카테고리";
+                        addErrorLogs($errorLogs, $res, $req);
+                        echo json_encode($res, JSON_NUMERIC_CHECK);
+                        return;
+                }
+
+                http_response_code(200);
+                $res->code = 200;
+                $res->isSuccess=true;
+                $res->message = "조회 성공";
+                $res->data=$restaurantList;
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                return;
+
+                break;
+
+
+            /*
+            * API No. 5
+            * API Name : 음식점 리스트 조회 API
+            * 마지막 수정 날짜 : 19.02.08
+            */
+
+            case "restaurantInfo":
+                $restaurantNum=$vars['restaurantNumber'];
+                $restaurantInfo = getRestrauntInfo($restaurantNum);
+                if(!$restaurantInfo){
+                    http_response_code(400);
+                    $res->code = 400;
+                    $res->isSuccess=false;
+                    $res->message = "존재하지 않는 음식점";
+                    addErrorLogs($errorLogs, $res, $req);
+                    echo json_encode($res, JSON_NUMERIC_CHECK);
+                    return;
+                }
+                http_response_code(200);
+                $res->code = 200;
+                $res->isSuccess=true;
+                $res->message = "조회 성공";
+                $res->data->restaurantNumber=$restaurantInfo['restaurantNumber'];
+                $res->data->restaurantName=$restaurantInfo['restaurantName'];
+                $res->data->minimum=$restaurantInfo['minimum'];
+                $res->data->orderCount=$restaurantInfo['orderCount'];
+                switch($restaurantInfo['payment']){
+                    case 1:
+                        $res->data->payment="바로결제";
+                        break;
+                    case 2:
+                        $res->data->payment="만나서결제";
+                        break;
+                    case 3:
+                        $res->data->payment="바로결제, 만나서결제";
+                        break;
+                }
+                $res->data->phoneNumber=$restaurantInfo['phoneNumber'];
+                $res->data->businessTime=$restaurantInfo['businessTime'];
+                $res->data->dayOff=$restaurantInfo['dayOff'];
+                $res->data->deliveryLocation=$restaurantInfo['deliveryLocation'];
+                $res->data->restaurantLocation=$restaurantInfo['restaurantLocation'];
+                $res->data->status=$restaurantInfo['status'];
+                $res->data->menu=getMenu($restaurantNum);
+ 
+                echo json_encode($res, JSON_NUMERIC_CHECK);
+                break;
+
+            /*
+            * API No. 6
+            * API Name : 음식점 정보 상세 조회 API
+            * 마지막 수정 날짜 : 19.02.08
+            */
+
+
     } catch (Exception $e) {
 
         return getSQLErrorException($errorLogs, $e, $req);

@@ -17,8 +17,11 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
     $r->addRoute('POST', '/login', 'login');
     $r->addRoute('POST', '/users', 'signUp');
     $r->addRoute('POST', '/users/auth','sendSms');
-    $r->addRoute('GET', '/users/auth','smsAuth');
+    $r->addRoute('POST', '/users/phone','smsAuth');
+    $r->addRoute('GET', '/restaurants', 'restaurantList');
+    $r->addRoute('GET', '/restaurants/{restaurantNumber:\d+}', 'restaurantInfo');
     $r->addRoute('GET', '/test', 'test');
+
 
 });
 
